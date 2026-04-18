@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@utility font-arabic {
+  font-family: "Amiri", "Noto Naskh Arabic", serif;
+}
+
+@layer base {
+  body {
+    @apply antialiased;
+  }
+}
+
