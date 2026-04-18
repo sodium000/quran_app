@@ -14,7 +14,6 @@ export default function SearchPage() {
   const { arabicFont, arabicFontSize, translationFontSize } = useSettings();
 
   useEffect(() => {
-    // Pre-fetch Quran data for faster searching
     fetch('/data/quran.json')
       .then(res => res.json())
       .then(data => setQuranData(data))
@@ -28,7 +27,6 @@ export default function SearchPage() {
     setIsSearching(true);
     setHasSearched(true);
     
-    // Simulate slight delay for UX
     setTimeout(() => {
       const searchResults = [];
       const lowerQuery = query.toLowerCase();

@@ -37,7 +37,7 @@ export default async function Home() {
             </div>
             
             <div className="relative z-10 flex flex-col h-full justify-between">
-              {/* Top Row: Badge & Arabic Name */}
+
               <div className="flex justify-between items-start mb-6">
                 <div className="relative flex-shrink-0 w-12 h-12 flex items-center justify-center shadow-sm rounded-xl">
                   <div className="absolute inset-0 bg-gradient-to-br from-emerald-100 to-teal-50 rounded-xl rotate-12 group-hover:rotate-45 transition-transform duration-500"></div>
@@ -51,7 +51,7 @@ export default async function Home() {
                 </div>
               </div>
               
-              {/* Bottom Row: English Name & Info */}
+
               <div className="mt-auto border-t border-emerald-50/50 pt-4">
                 <h2 className="text-xl font-bold text-slate-800 group-hover:text-emerald-700 transition-colors">
                   {surah.englishName}

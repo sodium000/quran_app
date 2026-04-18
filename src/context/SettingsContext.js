@@ -12,7 +12,7 @@ export function SettingsProvider({ children }) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // Load from local storage
+
     const savedFont = localStorage.getItem('arabicFont');
     const savedArabicSize = localStorage.getItem('arabicFontSize');
     const savedTranslationSize = localStorage.getItem('translationFontSize');
