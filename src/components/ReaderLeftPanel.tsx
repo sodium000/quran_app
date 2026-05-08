@@ -1,0 +1,80 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import type { Surah } from "../types/quran";
+
+interface ReaderLeftPanelProps {
+  surahs: Surah[];
+  currentSurahId: number;
+}
+
+export default function ReaderLeftPanel({ surahs, currentSurahId }: ReaderLeftPanelProps) {
+  const [query, setQuery] = useState("");
+
+  const filteredSurahs = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) {
+      return surahs;
+    }
+    return surahs.filter((s) => `${s.id}`.includes(q) || s.englishName.toLowerCase().includes(q) || s.name.toLowerCase().includes(q));
+  }, [query, surahs]);
+
+  return (
+    <>
+      <aside className="hidden lg:flex sticky top-24 h-[calc(100vh-7rem)] rounded-2xl bg-white border border-slate-200 shadow-sm flex-col items-center py-4 gap-4">
+        <button className="h-9 w-9 rounded-lg bg-emerald-100 text-emerald-700 text-xs font-bold">S</button>
+        <button className="h-9 w-9 rounded-lg hover:bg-slate-100 text-slate-500" aria-label="Home">
+          ⌂
+        </button>
+        <button className="h-9 w-9 rounded-lg hover:bg-slate-100 text-slate-500" aria-label="Library">
+          ⌗
+        </button>
+        <button className="h-9 w-9 rounded-lg hover:bg-slate-100 text-slate-500" aria-label="Audio">
+          ♪
+        </button>
+        <button className="h-9 w-9 rounded-lg hover:bg-slate-100 text-slate-500" aria-label="Bookmarks">
+          ☆
+        </button>
+      </aside>
+
+      <aside className="hidden lg:block sticky top-24 h-[calc(100vh-7rem)] rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+        <div className="border-b border-slate-100 p-3">
+          <div className="flex rounded-xl bg-slate-100 p-1 text-xs font-medium">
+            <button className="flex-1 rounded-lg bg-white py-1.5 text-slate-800 shadow-sm">Surah</button>
+            <button className="flex-1 rounded-lg py-1.5 text-slate-500">Juz</button>
+            <button className="flex-1 rounded-lg py-1.5 text-slate-500">Page</button>
+          </div>
+          <input
+            placeholder="Search Surah"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-emerald-300"
+          />
+        </div>
+        <div className="h-[calc(100%-92px)] overflow-y-auto p-2">
+          {filteredSurahs.map((item) => (
+            <Link
+              key={item.id}
+              href={`/surah/${item.id}`}
+              className={`block rounded-xl border px-3 py-3 mb-1 transition ${
+                item.id === currentSurahId ? "bg-emerald-50 border-emerald-200" : "bg-white border-transparent hover:bg-slate-50"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`h-7 min-w-7 rounded-full text-xs font-bold flex items-center justify-center ${item.id === currentSurahId ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600"}`}>{item.id}</div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-slate-800 truncate">{item.englishName}</p>
+                  <p className="text-xs text-slate-500 truncate">{item.type}</p>
+                </div>
+                <p className="font-arabic text-lg text-slate-700 truncate max-w-[110px]" dir="rtl">
+                  {item.name}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </aside>
+    </>
+  );
+}

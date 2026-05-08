@@ -76,11 +76,11 @@ export default function SearchPage() {
         </div>
 
         <div className="relative z-10 flex flex-col items-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-emerald-900 to-teal-800 bg-clip-text text-transparent mb-3 sm:mb-4 font-serif">Search the Quran</h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-linear-to-r from-emerald-900 to-teal-800 bg-clip-text text-transparent mb-3 sm:mb-4 font-serif">Search the Quran</h1>
           <p className="text-base sm:text-lg text-emerald-700/80 mb-8 sm:mb-10 font-light">Find wisdom by searching words or phrases in the English translation</p>
 
           <form onSubmit={handleSearch} className="w-full max-w-2xl mx-auto relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
+            <div className="absolute -inset-1 bg-linear-to-r from-emerald-400 to-teal-400 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
             <div className="relative flex items-center w-full">
               <span className="absolute left-4 sm:left-6 text-emerald-500 hidden sm:block">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -96,7 +96,7 @@ export default function SearchPage() {
               />
               <button
                 type="submit"
-                className="absolute right-2 sm:right-3 top-2 sm:top-3 bottom-2 sm:bottom-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-full px-4 sm:px-8 font-semibold shadow-lg shadow-emerald-500/30 transform hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:transform-none disabled:shadow-none text-sm sm:text-base"
+                className="absolute right-2 sm:right-3 top-2 sm:top-3 bottom-2 sm:bottom-3 bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-full px-4 sm:px-8 font-semibold shadow-lg shadow-emerald-500/30 transform hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:transform-none disabled:shadow-none text-sm sm:text-base"
                 disabled={!quranData || isSearching}
               >
                 {isSearching ? (
@@ -141,7 +141,7 @@ export default function SearchPage() {
         )}
 
         {results.map((result, idx) => (
-          <div key={idx} className="group relative bg-white/80 backdrop-blur-lg rounded-[1.5rem] sm:rounded-[2rem] p-6 sm:p-8 shadow-[0_4px_25px_rgb(0,0,0,0.03)] border border-white hover:border-emerald-200/50 hover:bg-white hover:shadow-[0_8px_30px_rgb(16,185,129,0.08)] transition-all duration-300">
+          <div key={idx} className="group relative bg-white/80 backdrop-blur-lg rounded-3xl sm:rounded-4xl p-6 sm:p-8 shadow-[0_4px_25px_rgb(0,0,0,0.03)] border border-white hover:border-emerald-200/50 hover:bg-white hover:shadow-[0_8px_30px_rgb(16,185,129,0.08)] transition-all duration-300">
             <div className="flex flex-col-reverse sm:flex-row justify-between items-start sm:items-center mb-5 sm:mb-6 pb-4 border-b border-emerald-50/50 gap-4 sm:gap-0">
               <Link
                 href={`/surah/${result.surahId}`}
@@ -169,7 +169,7 @@ export default function SearchPage() {
               >
                 {result.text}
               </div>
-              <div className="h-px w-full bg-gradient-to-r from-transparent via-emerald-100 to-transparent my-4 sm:my-6"></div>
+              <div className="h-px w-full bg-linear-to-r from-transparent via-emerald-100 to-transparent my-4 sm:my-6"></div>
               <div
                 className="text-left text-slate-600 leading-relaxed font-medium text-sm sm:text-base"
                 style={{ fontSize: `${Math.max(14, translationFontSize - (isMobile ? 2 : 0))}px` }}

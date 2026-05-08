@@ -23,7 +23,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <SettingsProvider>
           <Navbar />
           <Sidebar />
-          <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">{children}</main>
+          <main className="flex-1 w-full px-3 sm:px-4 lg:px-6 py-6">{children}</main>
         </SettingsProvider>
       </body>
     </html>

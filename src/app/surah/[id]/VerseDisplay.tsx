@@ -140,7 +140,7 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       <audio
         ref={audioRef}
         className="hidden"
@@ -188,8 +188,8 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
         }}
       />
 
-      <div className="sticky top-[5.5rem] z-30 mx-auto w-max mb-8 animate-in fade-in slide-in-from-top-4 duration-500">
-        <div className="bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/80 rounded-full px-6 py-3 flex items-center space-x-4">
+      <div className="sticky top-[5.5rem] z-30 mx-auto w-max mb-4 animate-in fade-in slide-in-from-top-4 duration-500">
+        <div className="bg-white shadow-sm border border-slate-200 rounded-full px-4 py-2 flex items-center space-x-3">
           <button
             onClick={togglePlay}
             disabled={playingStatus === "loading"}
@@ -222,7 +222,7 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
         </div>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-0 border border-slate-200 rounded-2xl overflow-hidden bg-white">
         {verses.map((verse, index) => {
           const isPlaying = currentVerseIndex === index && (playingStatus === "playing" || playingStatus === "paused");
 
@@ -232,43 +232,66 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
               ref={(el) => {
                 verseRefs.current[index] = el;
               }}
-              className={`group relative backdrop-blur-xl rounded-[1.5rem] sm:rounded-[2rem] p-6 sm:p-8 md:p-10 border transition-all duration-500 overflow-hidden ${
+              className={`group relative p-4 sm:p-5 border-b last:border-b-0 border-slate-100 transition-colors duration-300 ${
                 isPlaying
-                  ? "bg-white/95 border-emerald-300 ring-4 ring-emerald-500/20 scale-[1.01] shadow-[0_10px_40px_rgb(16,185,129,0.15)] z-10"
-                  : "bg-white/70 border-white/80 hover:bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(16,185,129,0.12)] z-0"
+                  ? "bg-emerald-50/60"
+                  : "bg-white hover:bg-slate-50/60"
               }`}
               style={{ animationDelay: isPlaying ? "0ms" : `${index * 50}ms` }}
             >
-              <div className={`absolute inset-0 bg-gradient-to-br from-emerald-50/80 to-transparent transition-opacity duration-500 pointer-events-none ${isPlaying ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}></div>
-
               <div className="relative z-10">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
-                  <div className="flex-shrink-0 relative flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 mb-2 md:mb-0">
-                    <div className={`absolute inset-0 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full transition-transform duration-700 shadow-lg shadow-emerald-500/20 ${isPlaying ? "rotate-90 animate-pulse" : "rotate-45 group-hover:rotate-90"}`}></div>
-                    <div className="absolute inset-[2px] bg-white rounded-full"></div>
-                    <span className={`relative font-bold text-base sm:text-lg font-serif transition-colors ${isPlaying ? "text-emerald-600" : "text-emerald-800"}`}>{verse.id}</span>
+                <div className="flex items-start gap-4">
+                  <div className="hidden sm:flex flex-col gap-2 w-10 items-center text-slate-400 mt-1">
+                    <button className="hover:text-emerald-600" aria-label="Play ayah">
+                      ▷
+                    </button>
+                    <button className="hover:text-emerald-600" aria-label="Bookmark ayah">
+                      ☆
+                    </button>
                   </div>
-
-                  <div
-                    className={`flex-1 w-full text-right leading-[2.2] sm:leading-[2.5] tracking-wide select-text transition-all duration-300 ${isPlaying ? "text-emerald-600 font-bold scale-[1.02] transform origin-right" : "text-slate-900 group-hover:text-emerald-800"}`}
-                    style={{ fontFamily: arabicFont, fontSize: `${Math.max(18, arabicFontSize - (isMobile ? 6 : 0))}px`, textShadow: isPlaying ? "0 4px 15px rgba(16,185,129,0.3)" : "0 2px 10px rgba(0,0,0,0.02)" }}
-                    dir="rtl"
-                  >
-                    {verse.text}
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs font-semibold text-emerald-700 mb-3">{surahId}:{verse.id}</div>
+                    <div
+                      className={`w-full text-right leading-[2.1] sm:leading-[2.4] tracking-wide select-text transition-all duration-300 ${
+                        isPlaying ? "text-emerald-700 font-semibold" : "text-slate-900"
+                      }`}
+                      style={{ fontFamily: arabicFont, fontSize: `${Math.max(18, arabicFontSize - (isMobile ? 6 : 0))}px` }}
+                      dir="rtl"
+                    >
+                      {verse.text}
+                    </div>
+                    <div className="h-px w-full my-4 bg-slate-100"></div>
+                    <div className="text-[11px] tracking-wide uppercase text-slate-400 mb-1">Saheeh International</div>
+                    <div className={`text-left leading-relaxed transition-colors duration-500 ${isPlaying ? "text-slate-900" : "text-slate-600"}`} style={{ fontSize: `${translationFontSize}px` }}>
+                      {verse.translation}
+                    </div>
                   </div>
-                </div>
-
-                <div className={`relative h-px w-full my-6 bg-gradient-to-r transition-colors duration-500 ${isPlaying ? "from-emerald-200 via-emerald-400 to-emerald-200" : "from-transparent via-emerald-100 to-transparent"}`}></div>
-
-                <div className={`text-left font-medium leading-relaxed max-w-4xl transition-colors duration-500 ${isPlaying ? "text-slate-900" : "text-slate-600"}`} style={{ fontSize: `${translationFontSize}px` }}>
-                  {verse.translation}
                 </div>
               </div>
-
-              {isPlaying && playingStatus === "playing" && <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-300 via-emerald-500 to-emerald-300 animate-pulse"></div>}
             </div>
           );
         })}
+      </div>
+
+      <div className="sticky bottom-2 z-30 mt-4">
+        <div className="mx-auto max-w-4xl rounded-2xl border border-emerald-200 bg-white/95 backdrop-blur px-4 py-3 shadow-sm">
+          <div className="h-1 rounded bg-emerald-100 mb-3 overflow-hidden">
+            <div className="h-full bg-emerald-500 w-1/3"></div>
+          </div>
+          <div className="flex items-center justify-between text-sm text-slate-600">
+            <span>
+              Surah {surahId} {currentVerseIndex >= 0 ? `• Ayah ${currentVerseIndex + 1}` : ""}
+            </span>
+            <div className="flex items-center gap-3">
+              <button onClick={togglePlay} className="h-8 w-8 rounded-full bg-emerald-600 text-white flex items-center justify-center">
+                {playingStatus === "playing" ? "❚❚" : "▶"}
+              </button>
+              <button onClick={stopPlay} className="text-slate-500 hover:text-red-500">
+                ✕
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
