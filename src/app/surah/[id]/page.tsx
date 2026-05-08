@@ -1,24 +1,25 @@
-import fs from 'fs';
-import path from 'path';
-import Link from 'next/link';
-import VerseDisplay from './VerseDisplay';
+import fs from "fs";
+import path from "path";
+import Link from "next/link";
+import VerseDisplay from "./VerseDisplay";
+import type { Surah } from "../../../types/quran";
 
 export async function generateStaticParams() {
-  const paths = [];
-  for (let i = 1; i <= 114; i++) {
+  const paths: { id: string }[] = [];
+  for (let i = 1; i <= 114; i += 1) {
     paths.push({ id: i.toString() });
   }
   return paths;
 }
 
-function getSurah(id) {
-  const filePath = path.join(process.cwd(), 'public/data/quran.json');
-  const fileContents = fs.readFileSync(filePath, 'utf8');
-  const surahs = JSON.parse(fileContents);
-  return surahs.find(s => s.id === parseInt(id, 10));
+function getSurah(id: string) {
+  const filePath = path.join(process.cwd(), "public/data/quran.json");
+  const fileContents = fs.readFileSync(filePath, "utf8");
+  const surahs = JSON.parse(fileContents) as Surah[];
+  return surahs.find((s) => s.id === Number.parseInt(id, 10));
 }
 
-export default async function SurahPage({ params }) {
+export default async function SurahPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const surah = getSurah(id);
 
@@ -39,10 +40,10 @@ export default async function SurahPage({ params }) {
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-10 mix-blend-overlay"></div>
         <div className="absolute top-0 right-0 -mt-16 -mr-16 text-emerald-500/10 blur-2xl transform rotate-12 pointer-events-none">
           <svg width="400" height="400" viewBox="0 0 24 24" fill="currentColor">
-             <path d="M12 2L9 9H2L7 14L5 21L12 17L19 21L17 14L22 9H15L12 2Z"></path>
+            <path d="M12 2L9 9H2L7 14L5 21L12 17L19 21L17 14L22 9H15L12 2Z"></path>
           </svg>
         </div>
-        
+
         <div className="relative z-10 flex flex-col items-center">
           <div className="w-12 sm:w-16 h-1 mb-4 sm:mb-6 rounded-full bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-80"></div>
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold text-white mb-4 sm:mb-6 font-arabic drop-shadow-lg tracking-wider leading-relaxed" dir="rtl">
@@ -58,7 +59,7 @@ export default async function SurahPage({ params }) {
           </div>
         </div>
       </div>
-      
+
       {surah.id !== 1 && surah.id !== 9 && (
         <div className="text-center py-8 sm:py-12 mb-6 sm:mb-8 relative px-4">
           <div className="absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-emerald-200 to-transparent opacity-50"></div>
