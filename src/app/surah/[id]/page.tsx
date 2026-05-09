@@ -78,7 +78,7 @@ export default async function SurahPage({ params }: { params: Promise<{ id: stri
                       alt={surah.name} 
                       width={180} 
                       height={60} 
-                      className=" opacity-100 brightness-200 dark: brightness-400 opacity-100"
+                      className=" opacity-100 brightness-200 dark: brightness-400 opacity-100" 
                     />
                   </div>
                   <div className="flex flex-col items-start gap-1">

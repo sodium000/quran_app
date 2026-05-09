@@ -1,10 +1,11 @@
-# 📖 Quran Web Application
+# 📖 Quran Mazid
 
-A premium, modern, and immersive Quran reading experience built with **Next.js 15** and **Tailwind CSS**. This application features high-quality audio recitation, dynamic verse highlighting, and a sleek, glassmorphic UI designed for peace and reflection.
+A premium, modern, and immersive Quran reading experience built with **Next.js 16** and **Tailwind CSS**. This application features high-quality audio recitation, dynamic verse highlighting, and a sleek, glassmorphic UI designed for peace and reflection.
 
 [**🌐 Live Demo**](https://quran-app-peace.vercel.app/surah)
 
-![Quran App Preview](./public/screenshot.png)
+![Quran App Dashboard](./public/screenshot.png)
+![Quran App Reading Page](./public/reading_page.png)
 
 ## ✨ Features
 
@@ -48,7 +49,7 @@ A premium, modern, and immersive Quran reading experience built with **Next.js 1
 3. **Download Quran Data**:
    The app uses a local JSON file for faster searching. Generate it using the provided utility script:
    ```bash
-   node downloadData.js
+   npm run download:data
    ```
 
 4. **Run the development server**:
