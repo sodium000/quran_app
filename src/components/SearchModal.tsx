@@ -4,8 +4,16 @@ import { useSearch } from "../context/SearchContext";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 
+function IconSearch({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.3-4.3m1.8-5.2a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+  );
+}
+
 export default function SearchModal() {
-  const { isOpen, query, results, isSearching, setQuery, closeSearch } = useSearch();
+  const { isOpen, query, results, isSearching, setQuery, toggleSearch, closeSearch } = useSearch();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -23,25 +31,20 @@ export default function SearchModal() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-16 sm:p-6 sm:pt-24">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] sm:pt-[15vh] px-4">
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
-        onClick={closeSearch}
+        className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300"
+        onClick={toggleSearch}
       />
 
-      {/* Modal Container */}
-      <div className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-(--app-card-strong) border border-(--app-border) shadow-2xl animate-in zoom-in-95 slide-in-from-top-4 duration-300">
-        
-        {/* Search Header */}
-        <div className="relative flex items-center border-b border-(--app-border) p-4">
-          <svg className="h-5 w-5 text-(--app-muted)" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+      {/* Modal */}
+      <div className="relative w-full max-w-2xl bg-(--app-card-strong) rounded-3xl shadow-floating border border-(--app-border) overflow-hidden animate-in zoom-in-95 fade-in duration-300">
+        {/* Search Input */}
+        <div className="flex items-center gap-4 px-6 py-5 border-b border-(--app-border) bg-(--app-surface)">
+          <IconSearch className="h-6 w-6 text-[var(--app-accent)]" />
           <input
             ref={inputRef}
-            type="text"
-            className="ml-3 flex-1 bg-transparent text-lg font-medium outline-none placeholder:text-(--app-muted-2) text-(--app-fg)"
             placeholder="Search Quran (Arabic or English)..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}

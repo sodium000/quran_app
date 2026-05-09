@@ -1,0 +1,21 @@
+{
+  "name": "Quran Mazid",
+  "short_name": "Quran",
+  "description": "A professional-grade Quran reading and recitation platform.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4F4F4",
+  "theme_color": "#4A7C44",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

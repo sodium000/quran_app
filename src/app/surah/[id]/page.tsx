@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -60,39 +61,55 @@ export default async function SurahPage({ params }: { params: Promise<{ id: stri
   }
 
   return (
-    <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
-      <div className="grid grid-cols-1 lg:grid-cols-[56px_minmax(240px,20vw)_minmax(0,1fr)] 2xl:grid-cols-[56px_minmax(260px,18vw)_minmax(0,1fr)_minmax(280px,22vw)] gap-3 lg:gap-4">
-        <ReaderLeftPanel surahs={allSurahs} currentSurahId={surah.id} />
-
-        <div className="min-w-0 pb-16 sm:pb-24">
-          <div className="text-center py-4 border-b border-(--app-border) mb-4">
-            <h1 className="text-2xl sm:text-3xl font-semibold text-(--app-fg)">{surah.englishName}</h1>
-            <p className="text-sm text-(--app-muted) mt-1">
-              Ayah-{surah.verses.length}, {surah.type}
-            </p>
-          </div>
-
-          <div className="xl:hidden mb-4">
-            <Link href="/surah" className="inline-flex items-center text-sm text-emerald-700 hover:text-emerald-900 font-medium">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              Back to Surahs
-            </Link>
-          </div>
-
-          {surah.id !== 1 && surah.id !== 9 && (
-            <div className="text-center py-5 mb-3 border-y border-(--app-border)">
-              <span className="inline-block text-3xl sm:text-4xl font-arabic text-(--app-fg) leading-relaxed" dir="rtl">
-                بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-              </span>
-            </div>
-          )}
-
-          <VerseDisplay surahId={surah.id} surahName={surah.englishName} verses={surah.verses} />
+    <div className="flex animate-in fade-in duration-700 ease-out">
+      <div className="flex flex-1 min-w-0">
+        <div className="w-[300px] xl:w-[320px] hidden lg:block shrink-0 sticky top-16 h-[calc(100vh-4rem)]">
+          <ReaderLeftPanel surahs={allSurahs} currentSurahId={surah.id} />
         </div>
 
-        <ReadingSettingsPanel variant="sidebar" />
+        <div className="flex-1 min-w-0">
+          <div className="">
+            <div className=" py-10 bg-(--app-card-strong)/50 rounded-3xl px-8"> 
+               <div className="flex items-center justify-between gap-8">
+      
+                  <div className="flex flex-col items-center">
+                    <Image 
+                      src={`/madinah.webp`} 
+                      alt={surah.name} 
+                      width={180} 
+                      height={60} 
+                      className=" opacity-100 brightness-200 dark:invert-0 dark:brightness-400 opacity-100 
+                      filter-none"
+                    />
+                  </div>
+                  <div className="flex flex-col items-start gap-1">
+                    <h1 className="text-2xl font-black text-(--app-fg) tracking-tight">{surah.englishName}</h1>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-(--app-muted)">{surah.type} • {surah.verses.length} Ayahs</span>
+                  </div>
+
+              
+
+                  <div className="flex flex-col items-end min-w-[200px]">
+                    {surah.id !== 1 && surah.id !== 9 && (
+                      <span className="text-2xl sm:text-3xl font-arabic text-(--app-muted-2) leading-relaxed text-right" dir="rtl">
+                        بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                      </span>
+                    )}
+                  </div>
+               </div>
+            </div>
+
+       
+
+            <div className=""> 
+              <VerseDisplay surahId={surah.id} surahName={surah.englishName} verses={surah.verses} />
+            </div>
+          </div>
+        </div>
+
+        <div className="sticky top-16 h-[calc(100vh-4rem)]">
+          <ReadingSettingsPanel variant="sidebar" />
+        </div>
       </div>
     </div>
   );

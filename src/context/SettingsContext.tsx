@@ -73,7 +73,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [translationFontSize, setTranslationFontSize] = useState(16);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [theme, setTheme] = useState<ThemeMode>("system");
+  const [theme, setTheme] = useState<ThemeMode>("dark");
 
   useEffect(() => {
     // Load persisted settings after mount (client-only).

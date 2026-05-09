@@ -54,7 +54,7 @@ function IconCompass() {
 
 export default function ReaderLeftPanel({ surahs, currentSurahId }: ReaderLeftPanelProps) {
   const [query, setQuery] = useState("");
-  const pathname = usePathname();
+  const [activeTab, setActiveTab] = useState<"surah" | "juz" | "page">("surah");
 
   const filteredSurahs = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -65,80 +65,76 @@ export default function ReaderLeftPanel({ surahs, currentSurahId }: ReaderLeftPa
   }, [query, surahs]);
 
   return (
-    <>
-      <aside className="hidden lg:flex sticky top-24 h-[calc(100vh-7rem)] rounded-2xl bg-(--app-card) border border-(--app-border) shadow-sm flex-col items-center py-3 gap-2">
-        <span className="h-10 w-10 rounded-xl bg-emerald-500/15 text-emerald-300 text-xs font-bold flex items-center justify-center ring-1 ring-emerald-500/30">
-          S
-        </span>
+    <aside className="hidden lg:flex flex-col w-full h-[calc(100vh-4rem)] bg-(--app-bg) border-r border-(--app-border) overflow-hidden">
+      <div className="p-4 flex flex-col gap-4">
+        <div className="flex rounded-lg bg-(--app-surface) p-1 text-[11px] font-bold uppercase tracking-wider">
+          <button 
+            onClick={() => setActiveTab("surah")}
+            className={`flex-1 rounded-md py-1.5 transition-all ${activeTab === "surah" ? "bg-(--app-card) text-(--app-fg) shadow-sm" : "text-(--app-muted)"}`}
+          >
+            Surah
+          </button>
+          <button 
+            onClick={() => setActiveTab("juz")}
+            className={`flex-1 rounded-md py-1.5 transition-all ${activeTab === "juz" ? "bg-(--app-card) text-(--app-fg) shadow-sm" : "text-(--app-muted)"}`}
+          >
+            Juz
+          </button>
+          <button 
+            onClick={() => setActiveTab("page")}
+            className={`flex-1 rounded-md py-1.5 transition-all ${activeTab === "page" ? "bg-(--app-card) text-(--app-fg) shadow-sm" : "text-(--app-muted)"}`}
+          >
+            Page
+          </button>
+        </div>
 
-        <Link
-          href="/surah"
-          className={`h-10 w-10 rounded-xl flex items-center justify-center transition ${
-            pathname?.startsWith("/surah") ? "bg-emerald-500 text-white shadow-sm" : "text-(--app-muted) hover:bg-(--app-surface)"
-          }`}
-          aria-label="Surah Reader"
-        >
-          <IconHome />
-        </Link>
-        <button className="h-10 w-10 rounded-xl flex items-center justify-center text-(--app-muted) hover:bg-(--app-surface) transition" aria-label="Collections">
-          <IconGrid />
-        </button>
-        <button className="h-10 w-10 rounded-xl flex items-center justify-center text-(--app-muted) hover:bg-(--app-surface) transition" aria-label="Recitations">
-          <IconPlay />
-        </button>
-        <button className="h-10 w-10 rounded-xl flex items-center justify-center text-(--app-muted) hover:bg-(--app-surface) transition" aria-label="Bookmarks">
-          <IconBookmark />
-        </button>
-        <button className="mt-auto mb-1 h-10 w-10 rounded-xl flex items-center justify-center text-(--app-muted) hover:bg-(--app-surface) transition" aria-label="Explore">
-          <IconCompass />
-        </button>
-      </aside>
-
-      <aside className="hidden lg:block sticky top-24 h-[calc(100vh-7rem)] rounded-2xl bg-(--app-card) border border-(--app-border) shadow-sm overflow-hidden">
-        <div className="border-b border-(--app-border) p-3">
-          <div className="flex rounded-xl bg-(--app-surface) p-1 text-xs font-medium">
-            <button className="flex-1 rounded-lg bg-(--app-card-strong) py-1.5 text-(--app-fg) shadow-sm">Surah</button>
-            <button className="flex-1 rounded-lg py-1.5 text-(--app-muted)">Juz</button>
-            <button className="flex-1 rounded-lg py-1.5 text-(--app-muted)">Page</button>
-          </div>
+        <div className="relative group">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-(--app-muted) group-focus-within:text-[var(--app-accent)] transition-colors">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
           <input
             placeholder="Search Surah"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="mt-2 w-full rounded-lg border border-(--app-border) bg-(--app-card-strong) px-3 py-2 text-sm outline-none focus:border-emerald-300 text-(--app-fg) placeholder:text-(--app-muted-2)"
+            className="w-full rounded-xl border border-(--app-border) bg-(--app-surface) pl-10 pr-4 py-2.5 text-sm outline-none focus:border-[var(--app-accent)] transition-all text-(--app-fg) placeholder:text-(--app-muted-2)"
           />
         </div>
-        <div className="h-[calc(100%-92px)] overflow-y-auto p-2">
-          {filteredSurahs.map((item) => (
-            <Link
-              key={item.id}
-              href={`/surah/${item.id}`}
-              className={`block rounded-xl border px-3 py-3 mb-1 transition ${
-                item.id === currentSurahId
-                  ? "bg-emerald-500/10 border-emerald-500/30"
-                  : "bg-transparent border-transparent hover:bg-(--app-surface)"
+      </div>
+
+      <div className="flex-1 overflow-y-auto px-2 pb-4 scrollbar-thin">
+        {filteredSurahs.map((item) => (
+          <Link
+            key={item.id}
+            href={`/surah/${item.id}`}
+            className={`flex items-center gap-3 rounded-xl px-3 py-3 mb-1 transition-all ${
+              item.id === currentSurahId
+                ? "bg-[var(--app-accent-soft)]"
+                : "hover:bg-(--app-surface)"
+            }`}
+          >
+            <div
+              className={`h-9 w-9 shrink-0 rounded-lg text-xs font-bold flex items-center justify-center transition-all ${
+                item.id === currentSurahId 
+                  ? "bg-[var(--app-accent)] text-white shadow-md" 
+                  : "bg-(--app-surface) text-(--app-muted)"
               }`}
             >
-              <div className="flex items-center gap-3">
-                <div
-                  className={`h-7 min-w-7 rounded-full text-xs font-bold flex items-center justify-center ${
-                    item.id === currentSurahId ? "bg-emerald-600 text-white" : "bg-(--app-surface-2) text-(--app-muted)"
-                  }`}
-                >
-                  {item.id}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-(--app-fg) truncate">{item.englishName}</p>
-                  <p className="text-xs text-(--app-muted) truncate">{item.verses.length} Ayah</p>
-                </div>
-                <p className="font-arabic text-lg text-(--app-muted) truncate max-w-[110px]" dir="rtl">
-                  {item.name}
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </aside>
-    </>
+              {item.id}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className={`text-sm font-bold truncate ${item.id === currentSurahId ? "text-[var(--app-accent)]" : "text-(--app-fg)"}`}>
+                {item.englishName}
+              </p>
+              <p className="text-[10px] font-medium text-(--app-muted) uppercase tracking-wide">
+                {item.type} • {item.verses.length} Ayahs
+              </p>
+            </div>
+            <p className={`font-arabic text-xl ${item.id === currentSurahId ? "text-[var(--app-accent)]" : "text-(--app-muted)"}`} dir="rtl">
+              {item.name}
+            </p>
+          </Link>
+        ))}
+      </div>
+    </aside>
   );
 }

@@ -7,11 +7,12 @@ type AudioStatus = "idle" | "loading" | "playing" | "paused" | "error";
 interface AudioContextValue {
   status: AudioStatus;
   currentSurahId: number | null;
+  currentSurahName: string | null;
   currentAyahIndex: number;
   progress: number;
   duration: number;
-  playAyah: (surahId: number, ayahIndex: number) => Promise<void>;
-  playSurah: (surahId: number, startAyahIndex?: number) => Promise<void>;
+  playAyah: (surahId: number, surahName: string, ayahIndex: number) => Promise<void>;
+  playSurah: (surahId: number, surahName: string, startAyahIndex?: number) => Promise<void>;
   playNext: () => Promise<void>;
   playPrevious: () => Promise<void>;
   pause: () => void;
@@ -32,6 +33,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
   const [status, setStatus] = useState<AudioStatus>("idle");
   const [currentSurahId, setCurrentSurahId] = useState<number | null>(null);
+  const [currentSurahName, setCurrentSurahName] = useState<string | null>(null);
   const [currentAyahIndex, setCurrentAyahIndexState] = useState(-1);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -177,7 +179,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     };
   }, [handleEnded]);
 
-  const playAyah = useCallback(async (surahId: number, ayahIndex: number) => {
+  const playAyah = useCallback(async (surahId: number, surahName: string, ayahIndex: number) => {
     const isSameAyah = currentSurahRef.current === surahId && currentAyahIndexRef.current === ayahIndex;
     
     if (isSameAyah) {
@@ -198,6 +200,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     }
 
     setCurrentSurahId(surahId);
+    setCurrentSurahName(surahName);
     currentSurahRef.current = surahId;
     
     const urls = await fetchSurahAudio(surahId);
@@ -205,8 +208,9 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     await playFromIndex(ayahIndex);
   }, [status, fetchSurahAudio, playFromIndex]);
 
-  const playSurah = useCallback(async (surahId: number, startAyahIndex = 0) => {
+  const playSurah = useCallback(async (surahId: number, surahName: string, startAyahIndex = 0) => {
     setCurrentSurahId(surahId);
+    setCurrentSurahName(surahName);
     currentSurahRef.current = surahId;
     const urls = await fetchSurahAudio(surahId);
     playlistRef.current = urls;
@@ -247,12 +251,16 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     setProgress(0);
     setDuration(0);
     setStatus("idle");
+    setCurrentSurahId(null);
+    setCurrentSurahName(null);
+    currentSurahRef.current = null;
     setCurrentAyahIndex(-1);
   }, [setCurrentAyahIndex]);
 
   const value = useMemo(() => ({
     status,
     currentSurahId,
+    currentSurahName,
     currentAyahIndex,
     progress,
     duration,
@@ -264,7 +272,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     resume,
     togglePlayPause,
     stop,
-  }), [status, currentSurahId, currentAyahIndex, progress, duration, playAyah, playSurah, playNext, playPrevious, pause, resume, togglePlayPause, stop]);
+  }), [status, currentSurahId, currentSurahName, currentAyahIndex, progress, duration, playAyah, playSurah, playNext, playPrevious, pause, resume, togglePlayPause, stop]);
 
   return <AudioContext.Provider value={value}>{children}</AudioContext.Provider>;
 }

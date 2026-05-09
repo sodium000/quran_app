@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import AudioPlayer from "../../../components/AudioPlayer";
+import { useEffect, useRef, useState, useCallback } from "react";
 import AyahCard from "../../../components/AyahCard";
 import { useAudio } from "../../../hooks/useAudio";
 import { useSettings } from "../../../context/SettingsContext";
@@ -18,9 +17,12 @@ export default function VerseDisplay({ surahId, surahName, verses }: VerseDispla
   const { status, currentSurahId, currentAyahIndex, playAyah } = useAudio();
 
   const [bookmarkedAyahs, setBookmarkedAyahs] = useState<Record<string, true>>({});
+  const [lastReadAyahId, setLastReadAyahId] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const verseRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const hasRestoredScroll = useRef(false);
 
+ 
   useEffect(() => {
     const isActiveSurah = currentSurahId === surahId;
     if (isActiveSurah && status === "playing" && currentAyahIndex >= 0 && verseRefs.current[currentAyahIndex]) {
@@ -28,41 +30,64 @@ export default function VerseDisplay({ surahId, surahName, verses }: VerseDispla
     }
   }, [currentAyahIndex, currentSurahId, status, surahId]);
 
+ 
   useEffect(() => {
-    const updateScreenState = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-    updateScreenState();
-    window.addEventListener("resize", updateScreenState);
-    return () => {
-      window.removeEventListener("resize", updateScreenState);
-    };
-  }, []);
-
-  useEffect(() => {
-    const key = `bookmarks:surah:${surahId}`;
-    const raw = localStorage.getItem(key);
-    if (!raw) {
-      return;
-    }
-    try {
-      const parsed = JSON.parse(raw) as number[];
-      const map: Record<string, true> = {};
-      for (const ayahId of parsed) {
-        map[String(ayahId)] = true;
+    const bookmarksKey = `bookmarks:surah:${surahId}`;
+    const lastReadKey = `lastRead:surah:${surahId}`;
+    
+ 
+    const rawBookmarks = localStorage.getItem(bookmarksKey);
+    if (rawBookmarks) {
+      try {
+        const parsed = JSON.parse(rawBookmarks) as number[];
+        const map: Record<string, true> = {};
+        for (const id of parsed) map[String(id)] = true;
+        setBookmarkedAyahs(map);
+      } catch (e) {
+        console.error("Failed to parse bookmarks", e);
       }
-      setBookmarkedAyahs(map);
-    } catch {
-      setBookmarkedAyahs({});
+    }
+
+ 
+    const rawLastRead = localStorage.getItem(lastReadKey);
+    if (rawLastRead) {
+      const id = Number.parseInt(rawLastRead, 10);
+      if (!isNaN(id)) {
+        setLastReadAyahId(id);
+      }
     }
   }, [surahId]);
 
+  useEffect(() => {
+    if (lastReadAyahId !== null && !hasRestoredScroll.current) {
+      const index = verses.findIndex(v => v.id === lastReadAyahId);
+      if (index !== -1 && verseRefs.current[index]) {
+        setTimeout(() => {
+          verseRefs.current[index]?.scrollIntoView({ behavior: "smooth", block: "center" });
+          hasRestoredScroll.current = true;
+        }, 500);
+      }
+    }
+  }, [lastReadAyahId, verses]);
+
+  useEffect(() => {
+    const updateScreenState = () => setIsMobile(window.innerWidth < 640);
+    updateScreenState();
+    window.addEventListener("resize", updateScreenState);
+    return () => window.removeEventListener("resize", updateScreenState);
+  }, []);
+
+  const handleSetLastRead = useCallback((ayahId: number) => {
+    setLastReadAyahId(ayahId);
+    localStorage.setItem(`lastRead:surah:${surahId}`, String(ayahId));
+  }, [surahId]);
+
   const handleCopyAyah = async (verse: Verse) => {
-    const payload = `${surahId}:${verse.id}\n${verse.text}\n\n${verse.translation}`;
+    const payload = `${verse.text}\n\n${verse.translation}\n\n[Surah ${surahId}:${verse.id}]`;
     try {
       await navigator.clipboard.writeText(payload);
-    } catch {
-      // No-op if clipboard is blocked.
+    } catch (e) {
+      console.warn("Clipboard access denied");
     }
   };
 
@@ -71,11 +96,8 @@ export default function VerseDisplay({ surahId, surahName, verses }: VerseDispla
     setBookmarkedAyahs((prev) => {
       const next = { ...prev };
       const id = String(verseId);
-      if (next[id]) {
-        delete next[id];
-      } else {
-        next[id] = true;
-      }
+      if (next[id]) delete next[id];
+      else next[id] = true;
 
       const ids = Object.keys(next).map((value) => Number.parseInt(value, 10));
       localStorage.setItem(key, JSON.stringify(ids));
@@ -84,10 +106,9 @@ export default function VerseDisplay({ surahId, surahName, verses }: VerseDispla
   };
 
   return (
-    <div className="space-y-4">
-      <AudioPlayer surahId={surahId} surahName={surahName} />
+    <div className="space-y-6 sm:space-y-10">
 
-      <div className="space-y-3 sm:space-y-4">
+      <div className="flex flex-col ">
         {verses.map((verse, index) => {
           const isPlaying = currentSurahId === surahId && currentAyahIndex === index && (status === "playing" || status === "paused" || status === "loading");
 
@@ -97,23 +118,22 @@ export default function VerseDisplay({ surahId, surahName, verses }: VerseDispla
               ref={(el) => {
                 verseRefs.current[index] = el;
               }}
-              style={{ animationDelay: isPlaying ? "0ms" : `${index * 50}ms` }}
+              className="animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out fill-mode-both"
+              style={{ animationDelay: `${index * 50}ms` }}
             >
               <AyahCard
                 ayah={verse}
                 surahId={surahId}
                 isPlaying={isPlaying}
                 isBookmarked={Boolean(bookmarkedAyahs[String(verse.id)])}
+                isLastRead={lastReadAyahId === verse.id}
                 arabicFont={arabicFont}
-                arabicFontSize={Math.max(22, arabicFontSize - (isMobile ? 5 : 0))}
-                translationFontSize={Math.max(13, translationFontSize)}
-                onPlay={() => {
-                  void playAyah(surahId, index);
-                }}
-                onCopy={() => {
-                  void handleCopyAyah(verse);
-                }}
+                arabicFontSize={Math.max(22, arabicFontSize - (isMobile ? 6 : 0))}
+                translationFontSize={Math.max(14, translationFontSize)}
+                onPlay={() => void playAyah(surahId, surahName, index)}
+                onCopy={() => void handleCopyAyah(verse)}
                 onToggleBookmark={() => toggleBookmarkAyah(verse.id)}
+                onSetLastRead={() => handleSetLastRead(verse.id)}
               />
             </div>
           );
@@ -122,4 +142,5 @@ export default function VerseDisplay({ surahId, surahName, verses }: VerseDispla
     </div>
   );
 }
+
 

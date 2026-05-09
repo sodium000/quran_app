@@ -6,43 +6,52 @@
 
 @layer base {
   :root {
-    --app-bg: #f8fafc;
-    --app-fg: #0f172a;
-    --app-card: rgba(255, 255, 255, 0.8);
-    --app-border: rgba(226, 232, 240, 1);
+    --app-bg: #fdfdfd;
+    --app-fg: #1a1a1a;
+    --app-accent: #2d6a4f;
+    --app-accent-soft: rgba(45, 106, 79, 0.1);
+    --app-card: #ffffff;
     --app-card-strong: #ffffff;
-    --app-muted: rgba(15, 23, 42, 0.6);
-    --app-muted-2: rgba(15, 23, 42, 0.38);
-    --app-surface: rgba(15, 23, 42, 0.04);
-    --app-surface-2: rgba(15, 23, 42, 0.06);
+    --app-border: #e5e7eb;
+    --app-muted: #6b7280;
+    --app-muted-2: #9ca3af;
+    --app-surface: #f9fafb;
+    --app-surface-2: #f3f4f6;
+    --shadow-premium: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+    --shadow-floating: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
   }
 
   html[data-theme="dark"] {
-    --app-bg: #0b1220;
-    --app-fg: #e5e7eb;
-    --app-card: rgba(15, 23, 42, 0.72);
-    --app-border: rgba(51, 65, 85, 0.85);
-    --app-card-strong: rgba(2, 6, 23, 0.92);
-    --app-muted: rgba(226, 232, 240, 0.72);
-    --app-muted-2: rgba(226, 232, 240, 0.5);
-    --app-surface: rgba(255, 255, 255, 0.06);
-    --app-surface-2: rgba(255, 255, 255, 0.09);
+    --app-bg: #0b0b0b;
+    --app-fg: #ffffff;
+    --app-accent: #2d6a4f;
+    --app-accent-soft: rgba(45, 106, 79, 0.2);
+    --app-card: #111111;
+    --app-border: #1f1f1f;
+    --app-card-strong: #080808;
+    --app-muted: #8e8e8e;
+    --app-muted-2: #666666;
+    --app-surface: #161616;
+    --app-surface-2: #1c1c1c;
   }
 
   html[data-theme="sepia"] {
     --app-bg: #f4ecd8;
     --app-fg: #2b251a;
-    --app-card: rgba(255, 250, 236, 0.75);
-    --app-border: rgba(210, 189, 148, 0.8);
-    --app-card-strong: rgba(255, 250, 236, 0.96);
-    --app-muted: rgba(43, 37, 26, 0.66);
-    --app-muted-2: rgba(43, 37, 26, 0.45);
-    --app-surface: rgba(43, 37, 26, 0.06);
-    --app-surface-2: rgba(43, 37, 26, 0.09);
+    --app-accent: #2d6a4f;
+    --app-accent-soft: rgba(45, 106, 79, 0.1);
+    --app-card: #fffaf0;
+    --app-border: #d2bd94;
+    --app-card-strong: #fffaf0;
+    --app-muted: #6b5d4a;
+    --app-muted-2: #8b7d6a;
+    --app-surface: #fdf5e6;
+    --app-surface-2: #faebd7;
   }
 
+
   body {
-    @apply antialiased;
+    @apply antialiased bg-(--app-bg) text-(--app-fg);
   }
 }
 

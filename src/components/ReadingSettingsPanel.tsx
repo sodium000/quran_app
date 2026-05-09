@@ -22,57 +22,57 @@ export default function ReadingSettingsPanel({ variant = "sidebar", onClose }: R
   const [isFontSettingsExpanded, setIsFontSettingsExpanded] = useState(true);
 
   const containerClasses = variant === "sidebar" 
-    ? "hidden 2xl:block w-full sticky top-24" 
+    ? "hidden xl:block w-[350px] shrink-0 border-l border-(--app-border) bg-(--app-bg) h-[calc(100vh-4rem)] overflow-y-auto scrollbar-thin" 
     : "w-full h-full bg-(--app-card-strong) flex flex-col shadow-2xl";
 
   const Content = (
-    <div className={`space-y-6 ${variant === "sidebar" ? "" : "p-6"}`}>
+    <div className={`space-y-8 ${variant === "sidebar" ? "p-6" : "p-6"}`}>
       {/* Tabs */}
-      <div className="flex rounded-full bg-(--app-surface) p-1 text-sm font-medium">
+      <div className="flex rounded-xl bg-(--app-surface) p-1 text-[11px] font-bold uppercase tracking-wider">
         <button 
           onClick={() => setActiveTab("translation")}
-          className={`flex-1 rounded-full py-2.5 transition-all ${activeTab === "translation" ? "bg-(--app-card-strong) text-(--app-fg) shadow-sm" : "text-(--app-muted)"}`}
+          className={`flex-1 rounded-lg py-2.5 transition-all ${activeTab === "translation" ? "bg-(--app-card) text-(--app-fg) shadow-sm" : "text-(--app-muted)"}`}
         >
           Translation
         </button>
         <button 
           onClick={() => setActiveTab("reading")}
-          className={`flex-1 rounded-full py-2.5 transition-all ${activeTab === "reading" ? "bg-(--app-card-strong) text-(--app-fg) shadow-sm" : "text-(--app-muted)"}`}
+          className={`flex-1 rounded-lg py-2.5 transition-all ${activeTab === "reading" ? "bg-(--app-card) text-(--app-fg) shadow-sm" : "text-(--app-muted)"}`}
         >
           Reading
         </button>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-6">
         {/* Reading Settings Header */}
-        <button className="w-full flex items-center justify-between py-2 group">
+        <button className="w-full flex items-center justify-between py-1 group">
           <div className="flex items-center gap-3">
-             <IconReading className="h-5 w-5 text-(--app-muted)" />
+             <IconReading className="h-4.5 w-4.5 text-(--app-muted)" />
              <span className="text-sm font-bold text-(--app-fg)">Reading Settings</span>
           </div>
-          <IconChevronDown className="h-4 w-4 text-(--app-muted-2) group-hover:text-(--app-fg)" />
+          <IconChevronDown className="h-4 w-4 text-(--app-muted-2)" />
         </button>
 
         {/* Font Settings Section */}
-        <div className="space-y-4">
+        <div className="space-y-4 pt-2 border-t border-(--app-border)">
           <button 
             onClick={() => setIsFontSettingsExpanded(!isFontSettingsExpanded)}
-            className="w-full flex items-center justify-between py-2 group"
+            className="w-full flex items-center justify-between py-1 group"
           >
             <div className="flex items-center gap-3">
-               <IconFont className="h-5 w-5 text-amber-700" />
-               <span className="text-sm font-bold text-amber-900">Font Settings</span>
+               <div className="h-7 w-7 flex items-center justify-center rounded-lg bg-[var(--app-accent-soft)] text-[var(--app-accent)] font-bold text-xs">T</div>
+               <span className="text-sm font-bold text-(--app-fg)">Font Settings</span>
             </div>
             <IconChevronUp className={`h-4 w-4 text-(--app-muted-2) transition-transform ${isFontSettingsExpanded ? "" : "rotate-180"}`} />
           </button>
 
           {isFontSettingsExpanded && (
-            <div className="space-y-6 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="space-y-8 pt-4 animate-in fade-in slide-in-from-top-2 duration-300">
               {/* Arabic Font Size */}
               <div className="space-y-4">
-                <div className="flex justify-between items-center text-sm font-bold">
-                  <span className="text-(--app-fg)">Arabic Font Size</span>
-                  <span className="text-amber-800">{arabicFontSize}</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-(--app-muted) uppercase tracking-wider">Arabic Font Size</span>
+                  <span className="text-sm font-black text-[var(--app-accent)]">{arabicFontSize}</span>
                 </div>
                 <input
                   type="range"
@@ -81,15 +81,15 @@ export default function ReadingSettingsPanel({ variant = "sidebar", onClose }: R
                   step="1"
                   value={arabicFontSize}
                   onChange={(e) => setArabicFontSize(Number(e.target.value))}
-                  className="w-full h-1.5 rounded-full appearance-none bg-amber-900/10 accent-amber-800 cursor-pointer"
+                  className="w-full h-1 rounded-full appearance-none bg-(--app-surface-2) accent-[var(--app-accent)] cursor-pointer"
                 />
               </div>
 
               {/* Translation Font Size */}
               <div className="space-y-4">
-                <div className="flex justify-between items-center text-sm font-bold">
-                  <span className="text-(--app-fg)">Translation Font Size</span>
-                  <span className="text-amber-800">{translationFontSize}</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-(--app-muted) uppercase tracking-wider">Translation Font Size</span>
+                  <span className="text-sm font-black text-[var(--app-accent)]">{translationFontSize}</span>
                 </div>
                 <input
                   type="range"
@@ -98,18 +98,18 @@ export default function ReadingSettingsPanel({ variant = "sidebar", onClose }: R
                   step="1"
                   value={translationFontSize}
                   onChange={(e) => setTranslationFontSize(Number(e.target.value))}
-                  className="w-full h-1.5 rounded-full appearance-none bg-amber-900/10 accent-amber-800 cursor-pointer"
+                  className="w-full h-1 rounded-full appearance-none bg-(--app-surface-2) accent-[var(--app-accent)] cursor-pointer"
                 />
               </div>
 
               {/* Arabic Font Face */}
               <div className="space-y-3">
-                <label className="text-sm font-bold text-(--app-fg)">Arabic Font Face</label>
+                <label className="text-xs font-bold text-(--app-muted) uppercase tracking-wider">Arabic Font Face</label>
                 <div className="relative">
                    <select 
                      value={arabicFont}
                      onChange={(e) => setArabicFont(e.target.value)}
-                     className="w-full appearance-none rounded-xl border border-(--app-border) bg-amber-500/5 p-4 pr-10 text-sm font-semibold text-(--app-fg) outline-none focus:border-amber-500/50"
+                     className="w-full appearance-none rounded-xl border border-(--app-border) bg-(--app-surface) p-3 pr-10 text-sm font-semibold text-(--app-fg) outline-none focus:border-[var(--app-accent)]"
                    >
                      <option value="var(--font-amiri)">Amiri Quran</option>
                      <option value="var(--font-scheherazade-new)">Scheherazade New</option>
@@ -125,13 +125,13 @@ export default function ReadingSettingsPanel({ variant = "sidebar", onClose }: R
       </div>
 
       {/* Support Box */}
-      <div className="mt-8 rounded-2xl bg-amber-500/10 p-6 border border-amber-500/10">
-        <h4 className="text-base font-bold text-(--app-fg)">Help spread the knowledge of Islam</h4>
-        <p className="text-xs text-(--app-muted) mt-3 leading-relaxed">
+      <div className="mt-8 rounded-2xl bg-[var(--app-accent-soft)] p-6 border border-[var(--app-accent)]/10">
+        <h4 className="text-sm font-bold text-(--app-fg)">Help spread the knowledge of Islam</h4>
+        <p className="text-[11px] text-(--app-muted) mt-3 leading-relaxed">
           Your regular support helps us reach our religious brothers and sisters with the message of Islam. 
           Join our mission and be part of the big change.
         </p>
-        <button className="mt-6 w-full bg-amber-800 hover:bg-amber-900 text-white text-sm font-bold rounded-xl py-3.5 transition-all shadow-md shadow-amber-900/20">
+        <button className="mt-6 w-full bg-[var(--app-accent)] hover:opacity-90 text-white text-xs font-bold rounded-xl py-3.5 transition-all shadow-md shadow-emerald-900/20">
           Support Us
         </button>
       </div>
@@ -141,9 +141,7 @@ export default function ReadingSettingsPanel({ variant = "sidebar", onClose }: R
   if (variant === "sidebar") {
     return (
       <aside className={containerClasses}>
-        <div className="bg-(--app-card) rounded-3xl border border-(--app-border) shadow-sm p-6 overflow-hidden">
-          {Content}
-        </div>
+        {Content}
       </aside>
     );
   }
@@ -172,14 +170,6 @@ function IconReading({ className }: { className?: string }) {
       <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
       <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
     </svg>
-  );
-}
-
-function IconFont({ className }: { className?: string }) {
-  return (
-    <div className={`${className} flex items-center justify-center rounded bg-amber-700/10 font-bold text-[10px]`}>
-       T
-    </div>
   );
 }
 

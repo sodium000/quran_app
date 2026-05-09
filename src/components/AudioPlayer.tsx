@@ -3,15 +3,11 @@
 import { useAudio } from "../hooks/useAudio";
 import { useMemo } from "react";
 
-interface AudioPlayerProps {
-  surahId: number;
-  surahName: string;
-}
-
-export default function AudioPlayer({ surahId, surahName }: AudioPlayerProps) {
+export default function AudioPlayer() {
   const { 
     status, 
     currentSurahId, 
+    currentSurahName, 
     currentAyahIndex, 
     progress, 
     duration, 
@@ -24,8 +20,7 @@ export default function AudioPlayer({ surahId, surahName }: AudioPlayerProps) {
     playPrevious
   } = useAudio();
 
-  const isCurrentSurah = currentSurahId === surahId;
-  const isActive = isCurrentSurah && status !== "idle";
+  const isActive = status !== "idle";
 
   const progressPercent = useMemo(() => {
     if (duration <= 0) return 0;
@@ -40,8 +35,7 @@ export default function AudioPlayer({ surahId, surahName }: AudioPlayerProps) {
   };
 
   const onMainAction = async () => {
-    if (!isCurrentSurah || status === "idle" || status === "error") {
-      await playSurah(surahId, 0);
+    if (status === "idle" || status === "error") {
       return;
     }
     await togglePlayPause();
@@ -50,107 +44,94 @@ export default function AudioPlayer({ surahId, surahName }: AudioPlayerProps) {
   if (!isActive && status === "idle") return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 animate-in slide-in-from-bottom-full duration-500 ease-out">
-      <div className="absolute top-0 left-0 right-0 h-1 bg-(--app-surface-2) z-20">
+    <div className="fixed bottom-0 left-0 lg:left-[72px] right-0 z-50 animate-in slide-in-from-bottom-full duration-500 ease-out">  
+      <div className="h-1 bg-(--app-surface-2) w-full overflow-hidden relative">
         <div 
-          className="h-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] transition-all duration-300 ease-linear"
+          className="h-full bg-[var(--app-accent)] shadow-[0_0_10px_rgba(45,106,79,0.5)] transition-all duration-300 ease-linear"
           style={{ width: `${progressPercent}%` }}
-        />
-        <div 
-            className="absolute h-3 w-3 rounded-full bg-emerald-500 border-2 border-white shadow-md -top-1 transition-all duration-300 ease-linear"
-            style={{ left: `calc(${progressPercent}% - 6px)` }}
         />
       </div>
 
-      <div className="bg-(--app-card-strong) border-t border-(--app-border) shadow-[0_-10px_40px_rgba(0,0,0,0.1)] backdrop-blur-xl">
-        <div className="max-w-[1920px] mx-auto px-4 h-20 sm:h-24 flex items-center justify-between gap-4">
+      <div className="bg-(--app-card) border-t border-(--app-border) shadow-floating backdrop-blur-xl">
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-8 h-15 flex items-center justify-between gap-4">
           
-          <div className="flex-1 min-w-0 hidden md:block">
+          <div className="flex-1 min-w-0 hidden lg:flex items-center gap-4">
             <div className="flex flex-col">
-              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-emerald-600/70 mb-0.5">
-                {status === "loading" ? "Buffering..." : "Currently Playing"}
-              </span>
-              <h3 className="truncate text-sm sm:text-base font-bold text-(--app-fg)">
-                {surahName} : {currentAyahIndex + 1}
+              <h3 className="truncate text-sm font-smbold text-(--app-fg)">
+                {currentSurahName}: {currentAyahIndex + 1}
               </h3>
             </div>
           </div>
 
-          <div className="md:hidden flex-1 min-w-0">
+          <div className="lg:hidden flex-1 min-w-0">q
              <h3 className="truncate text-xs font-bold text-(--app-fg)">
-                {surahName} : {currentAyahIndex + 1}
+                {currentSurahName}: {currentAyahIndex + 1}
               </h3>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-6">
-            <button
-              onClick={() => void playPrevious()}
-              className="p-2 text-(--app-muted) hover:text-emerald-500 transition-colors active:scale-90"
-              title="Previous Ayah"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 sm:h-7 sm:w-7">
-                <path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z" />
-              </svg>
-            </button>
+          <div className="flex flex-col items-center gap-1.5">
+            <div className="flex items-center gap-4 sm:gap-10">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono font-bold text-(--app-muted) w-10 text-right">{formatTime(progress)}</span>
+                
+                <div className="flex items-center gap-1 sm:gap-3">
+                  <button
+                    onClick={() => void playPrevious()}
+                    className="p-2 text-(--app-muted) hover:text-[var(--app-accent)] transition-all active:scale-90"
+                    title="Previous"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+                      <path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z" />
+                    </svg>
+                  </button>
 
-            <button
-              onClick={() => void onMainAction()}
-              disabled={status === "loading"}
-              className="relative flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
-            >
-              {status === "loading" ? (
-                <svg className="h-6 w-6 animate-spin" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-              ) : status === "playing" ? (
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7 sm:h-8 sm:w-8">
-                  <path d="M6 5h4v14H6V5zm8 0h4v14h-4V5z" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7 sm:h-8 sm:w-8 translate-x-0.5">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              )}
-            </button>
+                  <button
+                    onClick={() => void onMainAction()}
+                    disabled={status === "loading"}
+                    className="relative flex h-8 w-8 items-center justify-center rounded-full bg-[var(--app-accent)] text-white shadow-lg shadow-emerald-900/20 transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
+                  >
+                    {status === "loading" ? (
+                      <svg className="h-6 w-6 animate-spin" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                    ) : status === "playing" ? (
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 ml-0.5">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    )}
+                  </button>
 
+                  <button
+                    onClick={() => void playNext()}
+                    className="p-2 text-(--app-muted) hover:text-[var(--app-accent)] transition-all active:scale-90"
+                    title="Next"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+                      <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+                    </svg>
+                  </button>
+                </div>
 
-            <button
-              onClick={() => void playNext()}
-              className="p-2 text-(--app-muted) hover:text-emerald-500 transition-colors active:scale-90"
-              title="Next Ayah"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 sm:h-7 sm:w-7">
-                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
-              </svg>
-            </button>
-
-            <button
-              onClick={stop}
-              className="p-2 text-(--app-muted) hover:text-red-500 transition-colors active:scale-90"
-              title="Stop"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 sm:h-6 sm:w-6">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
+                <span className="text-[10px] font-mono font-bold text-(--app-muted) w-10">{formatTime(duration)}</span>
+              </div>
+            </div>
           </div>
 
-          <div className="flex-1 flex justify-end items-center gap-3">
-             <div className="hidden sm:flex flex-col items-end">
-                <span className="text-sm font-bold text-(--app-fg)">
-                    {formatTime(progress)}
-                </span>
-                <span className="text-[10px] text-(--app-muted) uppercase font-medium">Current</span>
-             </div>
-             <div className="h-8 w-px bg-(--app-border) hidden sm:block mx-1" />
-             <div className="flex flex-col items-end">
-                <span className="text-sm font-bold text-(--app-fg) sm:text-emerald-600">
-                    {formatTime(duration)}
-                </span>
-                <span className="text-[10px] text-(--app-muted) uppercase font-medium">Total</span>
-             </div>
+          <div className="flex-1 flex justify-end">
+             <button
+              onClick={stop}
+              className="h-10 w-10 flex items-center justify-center rounded-xl text-(--app-muted) hover:bg-(--app-surface) hover:text-red-500 transition-all active:scale-95"
+              title="Close Player"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
 
         </div>
@@ -158,5 +139,3 @@ export default function AudioPlayer({ surahId, surahName }: AudioPlayerProps) {
     </div>
   );
 }
-
-
