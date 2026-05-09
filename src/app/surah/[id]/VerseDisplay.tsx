@@ -188,12 +188,12 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
         }}
       />
 
-      <div className="sticky top-[5.5rem] z-30 mx-auto w-max mb-4 animate-in fade-in slide-in-from-top-4 duration-500">
-        <div className="bg-white shadow-sm border border-slate-200 rounded-full px-4 py-2 flex items-center space-x-3">
+      <div className="sticky top-22 z-30 mx-auto w-max mb-4 animate-in fade-in slide-in-from-top-4 duration-500">
+        <div className="bg-(--app-card) shadow-sm border border-(--app-border) rounded-full px-4 py-2 flex items-center space-x-3">
           <button
             onClick={togglePlay}
             disabled={playingStatus === "loading"}
-            className="flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-full px-5 py-2.5 font-semibold shadow-md transform hover:-translate-y-0.5 transition-all disabled:opacity-75 disabled:transform-none focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2"
+            className="flex items-center justify-center space-x-2 bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-full px-5 py-2.5 font-semibold shadow-md transform hover:-translate-y-0.5 transition-all disabled:opacity-75 disabled:transform-none focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2"
           >
             {playingStatus === "loading" ? (
               <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -213,7 +213,11 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
           </button>
 
           {(playingStatus === "playing" || playingStatus === "paused" || currentVerseIndex !== -1) && (
-            <button onClick={stopPlay} className="p-2.5 rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors focus:outline-none" title="Stop Recitation">
+            <button
+              onClick={stopPlay}
+              className="p-2.5 rounded-full text-(--app-muted-2) hover:text-red-400 hover:bg-red-500/10 transition-colors focus:outline-none"
+              title="Stop Recitation"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                 <path fillRule="evenodd" d="M4.5 7.5a3 3 0 013-3h9a3 3 0 013 3v9a3 3 0 01-3 3h-9a3 3 0 01-3-3v-9z" clipRule="evenodd" />
               </svg>
@@ -222,7 +226,7 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
         </div>
       </div>
 
-      <div className="space-y-0 border border-slate-200 rounded-2xl overflow-hidden bg-white">
+      <div className="space-y-0 border border-(--app-border) rounded-2xl overflow-hidden bg-(--app-card)">
         {verses.map((verse, index) => {
           const isPlaying = currentVerseIndex === index && (playingStatus === "playing" || playingStatus === "paused");
 
@@ -232,16 +236,16 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
               ref={(el) => {
                 verseRefs.current[index] = el;
               }}
-              className={`group relative p-4 sm:p-5 border-b last:border-b-0 border-slate-100 transition-colors duration-300 ${
+              className={`group relative p-4 sm:p-5 border-b last:border-b-0 border-(--app-border) transition-colors duration-300 ${
                 isPlaying
-                  ? "bg-emerald-50/60"
-                  : "bg-white hover:bg-slate-50/60"
+                  ? "bg-emerald-500/10"
+                  : "bg-transparent hover:bg-(--app-surface)"
               }`}
               style={{ animationDelay: isPlaying ? "0ms" : `${index * 50}ms` }}
             >
               <div className="relative z-10">
                 <div className="flex items-start gap-4">
-                  <div className="hidden sm:flex flex-col gap-2 w-10 items-center text-slate-400 mt-1">
+                  <div className="hidden sm:flex flex-col gap-2 w-10 items-center text-(--app-muted-2) mt-1">
                     <button className="hover:text-emerald-600" aria-label="Play ayah">
                       ▷
                     </button>
@@ -253,16 +257,16 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
                     <div className="text-xs font-semibold text-emerald-700 mb-3">{surahId}:{verse.id}</div>
                     <div
                       className={`w-full text-right leading-[2.1] sm:leading-[2.4] tracking-wide select-text transition-all duration-300 ${
-                        isPlaying ? "text-emerald-700 font-semibold" : "text-slate-900"
+                        isPlaying ? "text-emerald-300 font-semibold" : "text-(--app-fg)"
                       }`}
                       style={{ fontFamily: arabicFont, fontSize: `${Math.max(18, arabicFontSize - (isMobile ? 6 : 0))}px` }}
                       dir="rtl"
                     >
                       {verse.text}
                     </div>
-                    <div className="h-px w-full my-4 bg-slate-100"></div>
-                    <div className="text-[11px] tracking-wide uppercase text-slate-400 mb-1">Saheeh International</div>
-                    <div className={`text-left leading-relaxed transition-colors duration-500 ${isPlaying ? "text-slate-900" : "text-slate-600"}`} style={{ fontSize: `${translationFontSize}px` }}>
+                    <div className="h-px w-full my-4 bg-(--app-border)"></div>
+                    <div className="text-[11px] tracking-wide uppercase text-(--app-muted-2) mb-1">Saheeh International</div>
+                    <div className={`text-left leading-relaxed transition-colors duration-500 ${isPlaying ? "text-(--app-fg)" : "text-(--app-muted)"}`} style={{ fontSize: `${translationFontSize}px` }}>
                       {verse.translation}
                     </div>
                   </div>
@@ -274,11 +278,11 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
       </div>
 
       <div className="sticky bottom-2 z-30 mt-4">
-        <div className="mx-auto max-w-4xl rounded-2xl border border-emerald-200 bg-white/95 backdrop-blur px-4 py-3 shadow-sm">
-          <div className="h-1 rounded bg-emerald-100 mb-3 overflow-hidden">
+        <div className="mx-auto max-w-4xl rounded-2xl border border-emerald-500/20 bg-(--app-card) backdrop-blur px-4 py-3 shadow-sm">
+          <div className="h-1 rounded bg-emerald-500/15 mb-3 overflow-hidden">
             <div className="h-full bg-emerald-500 w-1/3"></div>
           </div>
-          <div className="flex items-center justify-between text-sm text-slate-600">
+          <div className="flex items-center justify-between text-sm text-(--app-muted)">
             <span>
               Surah {surahId} {currentVerseIndex >= 0 ? `• Ayah ${currentVerseIndex + 1}` : ""}
             </span>
@@ -286,7 +290,7 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
               <button onClick={togglePlay} className="h-8 w-8 rounded-full bg-emerald-600 text-white flex items-center justify-center">
                 {playingStatus === "playing" ? "❚❚" : "▶"}
               </button>
-              <button onClick={stopPlay} className="text-slate-500 hover:text-red-500">
+              <button onClick={stopPlay} className="text-(--app-muted-2) hover:text-red-400">
                 ✕
               </button>
             </div>

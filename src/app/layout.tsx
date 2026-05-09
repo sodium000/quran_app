@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.className} ${amiri.variable} ${lateef.variable} ${notoNaskhArabic.variable} ${scheherazadeNew.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-slate-50 bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-emerald-50/50 via-slate-50 to-teal-50/50 text-slate-900 selection:bg-emerald-200">
+      <body className="min-h-full flex flex-col bg-(--app-bg) text-(--app-fg) selection:bg-emerald-200/70 selection:text-slate-900">
         <SettingsProvider>
           <Navbar />
           <Sidebar />

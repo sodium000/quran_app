@@ -8,15 +8,15 @@ export default function ReadingSettingsPanel() {
   return (
     <aside className="hidden 2xl:block w-full shrink-0">
       <div className="sticky top-24 space-y-4">
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
-          <div className="flex rounded-xl bg-slate-100 p-1 text-sm font-medium">
-            <button className="flex-1 rounded-lg bg-white text-slate-800 py-1.5 shadow-sm">Translation</button>
-            <button className="flex-1 rounded-lg text-slate-500 py-1.5">Reading</button>
+        <div className="bg-(--app-card) rounded-2xl border border-(--app-border) shadow-sm p-5">
+          <div className="flex rounded-xl bg-(--app-surface) p-1 text-sm font-medium">
+            <button className="flex-1 rounded-lg bg-(--app-card-strong) text-(--app-fg) py-1.5 shadow-sm">Translation</button>
+            <button className="flex-1 rounded-lg text-(--app-muted) py-1.5">Reading</button>
           </div>
 
           <div className="mt-5 space-y-4">
             <div>
-              <h3 className="text-sm font-semibold text-slate-800">Reading Settings</h3>
+              <h3 className="text-sm font-semibold text-(--app-fg)">Reading Settings</h3>
             </div>
             <div>
               <h3 className="text-sm font-semibold text-emerald-700">Font Settings</h3>
@@ -24,8 +24,8 @@ export default function ReadingSettingsPanel() {
 
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-slate-700">Arabic Font Size</span>
-                <span className="text-slate-500">{arabicFontSize}</span>
+                <span className="text-(--app-muted)">Arabic Font Size</span>
+                <span className="text-(--app-muted-2)">{arabicFontSize}</span>
               </div>
               <input
                 type="range"
@@ -40,8 +40,8 @@ export default function ReadingSettingsPanel() {
 
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-slate-700">Translation Font Size</span>
-                <span className="text-slate-500">{translationFontSize}</span>
+                <span className="text-(--app-muted)">Translation Font Size</span>
+                <span className="text-(--app-muted-2)">{translationFontSize}</span>
               </div>
               <input
                 type="range"
@@ -55,8 +55,12 @@ export default function ReadingSettingsPanel() {
             </div>
 
             <div>
-              <label className="text-sm text-slate-700">Arabic Font Face</label>
-              <select value={arabicFont} onChange={(e) => setArabicFont(e.target.value)} className="w-full mt-2 rounded-xl border border-slate-200 bg-white p-2.5 text-sm text-slate-700">
+              <label className="text-sm text-(--app-muted)">Arabic Font Face</label>
+              <select
+                value={arabicFont}
+                onChange={(e) => setArabicFont(e.target.value)}
+                className="w-full mt-2 rounded-xl border border-(--app-border) bg-(--app-card-strong) p-2.5 text-sm text-(--app-fg)"
+              >
                 <option value="var(--font-amiri)">Amiri</option>
                 <option value="var(--font-scheherazade-new)">Scheherazade New</option>
                 <option value="var(--font-lateef)">Lateef</option>
@@ -66,9 +70,9 @@ export default function ReadingSettingsPanel() {
           </div>
         </div>
 
-        <div className="bg-emerald-50 rounded-2xl border border-emerald-100 p-4">
-          <h4 className="text-sm font-semibold text-emerald-900">Help spread the knowledge of Islam</h4>
-          <p className="text-xs text-emerald-800/80 mt-2">Your regular support helps us reach more brothers and sisters with the message of Islam.</p>
+        <div className="bg-emerald-500/10 rounded-2xl border border-emerald-500/20 p-4">
+          <h4 className="text-sm font-semibold text-(--app-fg)">Help spread the knowledge of Islam</h4>
+          <p className="text-xs text-(--app-muted) mt-2">Your regular support helps us reach more brothers and sisters with the message of Islam.</p>
           <button className="mt-3 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg py-2">Support Us</button>
         </div>
       </div>

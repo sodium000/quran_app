@@ -11,7 +11,11 @@ interface SettingsContextValue {
   setTranslationFontSize: React.Dispatch<React.SetStateAction<number>>;
   isSidebarOpen: boolean;
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  theme: ThemeMode;
+  setTheme: React.Dispatch<React.SetStateAction<ThemeMode>>;
 }
+
+export type ThemeMode = "system" | "light" | "dark" | "sepia";
 
 const ARABIC_FONT_OPTIONS = [
   "var(--font-amiri)",
@@ -42,36 +46,72 @@ function normalizeArabicFont(value: string | null) {
 
 const SettingsContext = createContext<SettingsContextValue | undefined>(undefined);
 
+function normalizeTheme(value: string | null): ThemeMode {
+  if (value === "light" || value === "dark" || value === "sepia" || value === "system") {
+    return value;
+  }
+  return "system";
+}
+
+function applyThemeToDom(theme: ThemeMode) {
+  if (typeof window === "undefined") {
+    return;
+  }
+  const root = document.documentElement;
+  const systemPrefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ?? false;
+  const resolved = theme === "system" ? (systemPrefersDark ? "dark" : "light") : theme;
+  root.dataset.theme = resolved;
+  root.style.colorScheme = resolved === "dark" ? "dark" : "light";
+}
+
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const [arabicFont, setArabicFont] = useState(() => {
-    if (typeof window === "undefined") {
-      return "var(--font-amiri)";
-    }
-    return normalizeArabicFont(localStorage.getItem("arabicFont"));
-  });
-  const [arabicFontSize, setArabicFontSize] = useState(() => {
-    if (typeof window === "undefined") {
-      return 24;
-    }
-    const saved = localStorage.getItem("arabicFontSize");
-    return saved ? Number.parseInt(saved, 10) : 24;
-  });
-  const [translationFontSize, setTranslationFontSize] = useState(() => {
-    if (typeof window === "undefined") {
-      return 16;
-    }
-    const saved = localStorage.getItem("translationFontSize");
-    return saved ? Number.parseInt(saved, 10) : 16;
-  });
+  // IMPORTANT: keep initial render identical on server + client to avoid hydration mismatches.
+  const [arabicFont, setArabicFont] = useState("var(--font-amiri)");
+  const [arabicFontSize, setArabicFontSize] = useState(24);
+  const [translationFontSize, setTranslationFontSize] = useState(16);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [theme, setTheme] = useState<ThemeMode>("system");
+
+  useEffect(() => {
+    // Load persisted settings after mount (client-only).
+    const storedArabicFont = normalizeArabicFont(localStorage.getItem("arabicFont"));
+    const storedArabicFontSize = Number.parseInt(localStorage.getItem("arabicFontSize") ?? "", 10);
+    const storedTranslationFontSize = Number.parseInt(localStorage.getItem("translationFontSize") ?? "", 10);
+    const storedTheme = normalizeTheme(localStorage.getItem("theme"));
+
+    setArabicFont(storedArabicFont);
+    setArabicFontSize(Number.isFinite(storedArabicFontSize) ? storedArabicFontSize : 24);
+    setTranslationFontSize(Number.isFinite(storedTranslationFontSize) ? storedTranslationFontSize : 16);
+    setTheme(storedTheme);
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("arabicFont", arabicFont);
       localStorage.setItem("arabicFontSize", arabicFontSize.toString());
       localStorage.setItem("translationFontSize", translationFontSize.toString());
+      localStorage.setItem("theme", theme);
     }
-  }, [arabicFont, arabicFontSize, translationFontSize]);
+  }, [arabicFont, arabicFontSize, translationFontSize, theme]);
+
+  useEffect(() => {
+    applyThemeToDom(theme);
+    if (theme !== "system") {
+      return;
+    }
+
+    const mql = window.matchMedia("(prefers-color-scheme: dark)");
+    if (!mql) {
+      return;
+    }
+
+    const listener = () => applyThemeToDom("system");
+    if ("addEventListener" in mql) {
+      mql.addEventListener("change", listener);
+      return () => mql.removeEventListener("change", listener);
+    }
+    return;
+  }, [theme]);
 
   const value: SettingsContextValue = {
     arabicFont,
@@ -82,6 +122,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     setTranslationFontSize,
     isSidebarOpen,
     setIsSidebarOpen,
+    theme,
+    setTheme,
   };
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
