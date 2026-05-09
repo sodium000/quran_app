@@ -1,18 +1,20 @@
-# Quran Web Application 📖
+# 📖 Quran Web Application
 
-A modern, immersive, and premium Quran reading experience built with Next.js. This application features high-quality audio recitation, dynamic verse highlighting, and a sleek, glassmorphic UI.
+A premium, modern, and immersive Quran reading experience built with **Next.js 15** and **Tailwind CSS**. This application features high-quality audio recitation, dynamic verse highlighting, and a sleek, glassmorphic UI designed for peace and reflection.
 
-![Quran App Preview](https://images.unsplash.com/photo-1584281723351-9d74775d7b6b?auto=format&fit=crop&q=80&w=1200)
+[**🌐 Live Demo**](https://quran-app-peace.vercel.app/surah)
+
+![Quran App Preview](./public/screenshot.png)
 
 ## ✨ Features
 
-- **📖 Complete Quran Library**: Browse all 114 Surahs with detailed information.
-- **🎧 Seamless Audio Recitation**: Stream verse-by-verse audio from world-renowned reciter Mishary Rashid Alafasy.
+- **📖 Complete Quran Library**: Browse all 114 Surahs with detailed metadata.
+- **🎧 Seamless Audio Recitation**: Stream verse-by-verse audio from world-renowned reciters.
 - **✨ Active Highlighting**: Currently playing verses are visually highlighted and automatically scrolled into view.
-- **🛠️ Personalized Experience**: Adjustable font sizes for both Arabic text and English translations.
-- **🔍 Global Search**: Quickly find any Surah or verse.
-- **⚡ Performance First**: Built with Next.js and optimized using Turbopack for lightning-fast navigation.
-- **🛡️ Audio Proxying**: Custom server-side proxying for audio streams to ensure high reliability across all networks.
+- **🛠️ Personalized Experience**: Adjustable font sizes for Arabic text and English translations.
+- **🔍 Global Search**: Quickly find any Surah or specific verse.
+- **⚡ Performance First**: Built with Next.js App Router and optimized for lightning-fast navigation.
+- **🛡️ Audio Proxying**: Custom server-side proxying for audio streams to ensure high reliability.
 
 ## 🚀 Tech Stack
 
@@ -34,7 +36,7 @@ A modern, immersive, and premium Quran reading experience built with Next.js. Th
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/your-username/quran-app.git
    cd quran_app
    ```
 

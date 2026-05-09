@@ -66,7 +66,6 @@ export default function Navbar() {
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
           <div className="flex items-center gap-3 sm:gap-4">
-            {/* Mobile Menu Trigger */}
             <button
               onClick={() => setIsSidebarOpen(true)}
               className="lg:hidden flex items-center justify-center h-10 w-10 rounded-xl hover:bg-(--app-surface) transition-all text-(--app-muted) hover:text-[var(--app-accent)]"
