@@ -10,6 +10,7 @@ export default function Sidebar() {
   const { isSidebarOpen, setIsSidebarOpen } = useSettings();
   const pathname = usePathname();
   const [surahs, setSurahs] = useState<Surah[]>([]);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     fetch("/data/quran.json")
@@ -21,6 +22,14 @@ export default function Sidebar() {
   if (!isSidebarOpen) {
     return null;
   }
+
+  const filteredSurahs = surahs.filter((surah) => {
+    const q = query.trim().toLowerCase();
+    if (!q) {
+      return true;
+    }
+    return `${surah.id}`.includes(q) || surah.englishName.toLowerCase().includes(q) || surah.name.toLowerCase().includes(q);
+  });
 
   return (
     <>
@@ -42,10 +51,22 @@ export default function Sidebar() {
               </button>
             </div>
             <p className="text-xs text-(--app-muted) mt-1">Scrollable list of all 114 surahs</p>
+
+            <div className="mt-3 flex rounded-xl bg-(--app-surface) p-1 text-xs font-medium">
+              <button className="flex-1 rounded-lg bg-(--app-card-strong) py-1.5 text-(--app-fg) shadow-sm">Surah</button>
+              <button className="flex-1 rounded-lg py-1.5 text-(--app-muted)">Juz</button>
+              <button className="flex-1 rounded-lg py-1.5 text-(--app-muted)">Page</button>
+            </div>
+            <input
+              placeholder="Search Surah"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="mt-2 w-full rounded-lg border border-(--app-border) bg-(--app-card-strong) px-3 py-2 text-sm outline-none focus:border-emerald-300 text-(--app-fg) placeholder:text-(--app-muted-2)"
+            />
           </div>
 
           <div className="flex-1 overflow-y-auto px-3 py-3 space-y-1">
-            {surahs.map((surah) => {
+            {filteredSurahs.map((surah) => {
               const href = `/surah/${surah.id}`;
               const isActive = pathname === href;
               return (
@@ -72,6 +93,7 @@ export default function Sidebar() {
                         {surah.name}
                       </p>
                       <p className="text-sm text-(--app-muted) truncate">{surah.englishName}</p>
+                      <p className="text-[11px] text-(--app-muted-2) mt-0.5">{surah.verses.length} Ayah</p>
                     </div>
                   </div>
                 </Link>

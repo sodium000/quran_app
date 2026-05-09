@@ -1,7 +1,9 @@
-export interface Verse {
+export type Translation = string;
+
+export interface Ayah {
   id: number;
   text: string;
-  translation: string;
+  translation: Translation;
   audio?: string;
 }
 
@@ -10,8 +12,11 @@ export interface Surah {
   name: string;
   englishName: string;
   type: string;
-  verses: Verse[];
+  verses: Ayah[];
 }
+
+// Backward-compatible alias while components migrate to Ayah.
+export type Verse = Ayah;
 
 export interface SearchResult {
   surahId: number;

@@ -1,39 +1,62 @@
-import fs from "fs";
-import path from "path";
 import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import ReadingSettingsPanel from "../../../components/ReadingSettingsPanel";
 import ReaderLeftPanel from "../../../components/ReaderLeftPanel";
+import { getAllSurahs, getSurahById, getSurahStaticParams, parseSurahId } from "../../../lib/quran-data";
 import VerseDisplay from "./VerseDisplay";
-import type { Surah } from "../../../types/quran";
 
-export async function generateStaticParams() {
-  const paths: { id: string }[] = [];
-  for (let i = 1; i <= 114; i += 1) {
-    paths.push({ id: i.toString() });
+export const dynamicParams = false;
+
+export async function generateStaticParams(): Promise<Array<{ id: string }>> {
+  return getSurahStaticParams();
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const surahId = parseSurahId(id);
+
+  if (!surahId) {
+    return {
+      title: "Surah Not Found | Quran Mazid",
+      description: "Requested surah could not be found.",
+    };
   }
-  return paths;
-}
 
-function getSurah(id: string) {
-  const filePath = path.join(process.cwd(), "public/data/quran.json");
-  const fileContents = fs.readFileSync(filePath, "utf8");
-  const surahs = JSON.parse(fileContents) as Surah[];
-  return surahs.find((s) => s.id === Number.parseInt(id, 10));
-}
+  const surah = await getSurahById(surahId);
+  if (!surah) {
+    return {
+      title: "Surah Not Found | Quran Mazid",
+      description: "Requested surah could not be found.",
+    };
+  }
 
-function getAllSurahs() {
-  const filePath = path.join(process.cwd(), "public/data/quran.json");
-  const fileContents = fs.readFileSync(filePath, "utf8");
-  return JSON.parse(fileContents) as Surah[];
+  return {
+    title: `Surah ${surah.englishName} (${surah.id}) | Quran Mazid`,
+    description: `Read Surah ${surah.englishName} (${surah.name}) with translation. ${surah.type} revelation, ${surah.verses.length} ayahs.`,
+    alternates: {
+      canonical: `/surah/${surah.id}`,
+    },
+    openGraph: {
+      title: `Surah ${surah.englishName} (${surah.id})`,
+      description: `${surah.type} revelation • ${surah.verses.length} ayahs`,
+      url: `/surah/${surah.id}`,
+      type: "article",
+    },
+  };
 }
 
 export default async function SurahPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const surah = getSurah(id);
-  const allSurahs = getAllSurahs();
+  const surahId = parseSurahId(id);
+  if (!surahId) {
+    notFound();
+  }
+
+  const [surah, allSurahs] = await Promise.all([getSurahById(surahId), getAllSurahs()]);
 
   if (!surah) {
-    return <div className="text-center py-20 text-2xl text-emerald-800">Surah not found</div>;
+    notFound();
   }
 
   return (
@@ -42,9 +65,9 @@ export default async function SurahPage({ params }: { params: Promise<{ id: stri
         <ReaderLeftPanel surahs={allSurahs} currentSurahId={surah.id} />
 
         <div className="min-w-0 pb-16 sm:pb-24">
-          <div className="text-center py-4 border-b border-slate-100 mb-4">
-            <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900">{surah.englishName}</h1>
-            <p className="text-sm text-slate-500 mt-1">
+          <div className="text-center py-4 border-b border-(--app-border) mb-4">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-(--app-fg)">{surah.englishName}</h1>
+            <p className="text-sm text-(--app-muted) mt-1">
               Ayah-{surah.verses.length}, {surah.type}
             </p>
           </div>
@@ -59,8 +82,8 @@ export default async function SurahPage({ params }: { params: Promise<{ id: stri
           </div>
 
           {surah.id !== 1 && surah.id !== 9 && (
-            <div className="text-center py-5 mb-3 border-y border-slate-100">
-              <span className="inline-block text-3xl sm:text-4xl font-arabic text-slate-800 leading-relaxed" dir="rtl">
+            <div className="text-center py-5 mb-3 border-y border-(--app-border)">
+              <span className="inline-block text-3xl sm:text-4xl font-arabic text-(--app-fg) leading-relaxed" dir="rtl">
                 بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
               </span>
             </div>
