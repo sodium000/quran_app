@@ -58,14 +58,25 @@ function IconBook({ className }: { className?: string }) {
 }
 
 export default function Navbar() {
-  const { setIsSettingsOpen, theme, setTheme } = useSettings();
+  const { setIsSettingsOpen, setIsSidebarOpen, theme, setTheme } = useSettings();
   const { toggleSearch } = useSearch();
 
   return (
     <nav className="sticky top-0 z-40 w-full border-b border-(--app-border) bg-(--app-bg)/80 backdrop-blur-xl">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            {/* Mobile Menu Trigger */}
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden flex items-center justify-center h-10 w-10 rounded-xl hover:bg-(--app-surface) transition-all text-(--app-muted) hover:text-[var(--app-accent)]"
+              aria-label="Open Surah List"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+
             <Link href="/surah" className="flex flex-col">
               <h1 className="text-lg font-black text-(--app-fg) leading-tight tracking-tight">Quran Mazid</h1>
               <p className="text-[10px] font-medium text-(--app-muted) leading-tight">Read, Study, and Learn The Quran</p>
@@ -79,6 +90,18 @@ export default function Navbar() {
               className="flex items-center justify-center h-10 w-10 rounded-full hover:bg-(--app-surface) transition-all group"
             >
               <IconSearch className="h-5 w-5 text-(--app-muted) group-hover:text-[var(--app-accent)] transition-colors" />
+            </button>
+
+            {/* Mobile Settings Trigger */}
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="lg:hidden flex items-center justify-center h-10 w-10 rounded-full hover:bg-(--app-surface) transition-all group"
+              aria-label="Open Settings"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-(--app-muted) group-hover:text-[var(--app-accent)] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
             </button>
 
             {/* Theme Toggle */}

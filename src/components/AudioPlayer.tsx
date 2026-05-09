@@ -44,7 +44,7 @@ export default function AudioPlayer() {
   if (!isActive && status === "idle") return null;
 
   return (
-    <div className="fixed bottom-0 left-0 lg:left-[72px] right-0 z-50 animate-in slide-in-from-bottom-full duration-500 ease-out">  
+    <div className="fixed bottom-[64px] lg:bottom-0 left-0 lg:left-[72px] right-0 z-50 animate-in slide-in-from-bottom-full duration-500 ease-out">  
       <div className="h-1 bg-(--app-surface-2) w-full overflow-hidden relative">
         <div 
           className="h-full bg-[var(--app-accent)] shadow-[0_0_10px_rgba(45,106,79,0.5)] transition-all duration-300 ease-linear"
@@ -57,13 +57,13 @@ export default function AudioPlayer() {
           
           <div className="flex-1 min-w-0 hidden lg:flex items-center gap-4">
             <div className="flex flex-col">
-              <h3 className="truncate text-sm font-smbold text-(--app-fg)">
+              <h3 className="truncate text-sm font-semibold text-(--app-fg)">
                 {currentSurahName}: {currentAyahIndex + 1}
               </h3>
             </div>
           </div>
 
-          <div className="lg:hidden flex-1 min-w-0">q
+          <div className="lg:hidden flex-1 min-w-0">
              <h3 className="truncate text-xs font-bold text-(--app-fg)">
                 {currentSurahName}: {currentAyahIndex + 1}
               </h3>
