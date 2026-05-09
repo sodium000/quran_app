@@ -11,6 +11,8 @@ interface SettingsContextValue {
   setTranslationFontSize: React.Dispatch<React.SetStateAction<number>>;
   isSidebarOpen: boolean;
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isSettingsOpen: boolean;
+  setIsSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   theme: ThemeMode;
   setTheme: React.Dispatch<React.SetStateAction<ThemeMode>>;
 }
@@ -70,6 +72,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [arabicFontSize, setArabicFontSize] = useState(24);
   const [translationFontSize, setTranslationFontSize] = useState(16);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [theme, setTheme] = useState<ThemeMode>("system");
 
   useEffect(() => {
@@ -122,12 +125,15 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     setTranslationFontSize,
     isSidebarOpen,
     setIsSidebarOpen,
+    isSettingsOpen,
+    setIsSettingsOpen,
     theme,
     setTheme,
   };
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
 }
+
 
 export function useSettings() {
   const context = useContext(SettingsContext);

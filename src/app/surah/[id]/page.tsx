@@ -92,8 +92,10 @@ export default async function SurahPage({ params }: { params: Promise<{ id: stri
           <VerseDisplay surahId={surah.id} surahName={surah.englishName} verses={surah.verses} />
         </div>
 
-        <ReadingSettingsPanel />
+        <ReadingSettingsPanel variant="sidebar" />
       </div>
     </div>
   );
 }
+
+

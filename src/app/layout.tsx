@@ -6,6 +6,7 @@ import { AudioProvider } from "../context/AudioContext";
 import { SettingsProvider } from "../context/SettingsContext";
 import { SearchProvider } from "../context/SearchContext";
 import SearchModal from "../components/SearchModal";
+import SettingsSlideover from "../components/SettingsSlideover";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <Sidebar />
               <main className="flex-1 w-full px-3 sm:px-4 lg:px-6 py-6">{children}</main>
               <SearchModal />
+              <SettingsSlideover />
             </AudioProvider>
           </SearchProvider>
         </SettingsProvider>
