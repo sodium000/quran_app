@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Amiri, Inter, Lateef, Noto_Naskh_Arabic, Scheherazade_New } from "next/font/google";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import { AudioProvider } from "../context/AudioContext";
 import { SettingsProvider } from "../context/SettingsContext";
 import "./globals.css";
 
@@ -21,9 +22,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className={`${inter.className} ${amiri.variable} ${lateef.variable} ${notoNaskhArabic.variable} ${scheherazadeNew.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-(--app-bg) text-(--app-fg) selection:bg-emerald-200/70 selection:text-slate-900">
         <SettingsProvider>
-          <Navbar />
-          <Sidebar />
-          <main className="flex-1 w-full px-3 sm:px-4 lg:px-6 py-6">{children}</main>
+          <AudioProvider>
+            <Navbar />
+            <Sidebar />
+            <main className="flex-1 w-full px-3 sm:px-4 lg:px-6 py-6">{children}</main>
+          </AudioProvider>
         </SettingsProvider>
       </body>
     </html>
