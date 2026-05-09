@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSettings } from "../context/SettingsContext";
+import { useSearch } from "../context/SearchContext";
 
 function IconSearch({ className }: { className?: string }) {
   return (
@@ -58,6 +59,7 @@ function IconBook({ className }: { className?: string }) {
 
 export default function Navbar() {
   const { setIsSidebarOpen, theme, setTheme } = useSettings();
+  const { toggleSearch } = useSearch();
 
   return (
     <nav className="sticky top-0 z-40 w-full border-b border-white/10 bg-slate-950/90 backdrop-blur-xl">
@@ -89,12 +91,22 @@ export default function Navbar() {
           <div className="flex items-center gap-2 sm:gap-3">
             <button
               type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white hover:bg-white/10 transition"
+              className="hidden sm:flex items-center gap-3 h-10 px-4 rounded-xl border border-white/10 bg-white/5 text-white/60 hover:bg-white/10 transition group"
               aria-label="Search"
               title="Search"
-              onClick={() => {
-                // Search page removed; keeping button for future search UX.
-              }}
+              onClick={toggleSearch}
+            >
+              <IconSearch className="h-5 w-5 group-hover:text-white transition-colors" />
+              <span className="text-sm font-medium">Search...</span>
+              <kbd className="hidden lg:inline-flex h-5 w-8 items-center justify-center rounded bg-white/10 text-[10px] font-bold text-white/40 group-hover:text-white/60 transition-colors">⌘K</kbd>
+            </button>
+
+            <button
+              type="button"
+              className="sm:hidden inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white hover:bg-white/10 transition"
+              aria-label="Search"
+              title="Search"
+              onClick={toggleSearch}
             >
               <IconSearch className="h-5 w-5" />
             </button>
