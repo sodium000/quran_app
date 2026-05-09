@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import AyahCard from "../../../components/AyahCard";
 import { useSettings } from "../../../context/SettingsContext";
 import type { Verse } from "../../../types/quran";
 
@@ -17,6 +18,7 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
   const [audioData, setAudioData] = useState<string[] | null>(null);
   const [playingStatus, setPlayingStatus] = useState<PlayingStatus>("idle");
   const [currentVerseIndex, setCurrentVerseIndex] = useState(-1);
+  const [bookmarkedAyahs, setBookmarkedAyahs] = useState<Record<string, true>>({});
   const [isMobile, setIsMobile] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const verseRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -49,6 +51,24 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
       window.removeEventListener("resize", updateScreenState);
     };
   }, []);
+
+  useEffect(() => {
+    const key = `bookmarks:surah:${surahId}`;
+    const raw = localStorage.getItem(key);
+    if (!raw) {
+      return;
+    }
+    try {
+      const parsed = JSON.parse(raw) as number[];
+      const map: Record<string, true> = {};
+      for (const ayahId of parsed) {
+        map[String(ayahId)] = true;
+      }
+      setBookmarkedAyahs(map);
+    } catch {
+      setBookmarkedAyahs({});
+    }
+  }, [surahId]);
 
   const fetchAudio = async () => {
     try {
@@ -139,6 +159,55 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
     setCurrentVerseIndex(-1);
   };
 
+  const playSpecificAyah = async (index: number) => {
+    if (playingStatus === "playing" && currentVerseIndex === index) {
+      audioRef.current?.pause();
+      setPlayingStatus("paused");
+      return;
+    }
+
+    let urls = audioData;
+    if (!urls) {
+      setPlayingStatus("loading");
+      urls = await fetchAudio();
+      setAudioData(urls);
+    }
+    if (!urls || urls.length === 0) {
+      setPlayingStatus("idle");
+      alert("Audio could not be loaded at this time.");
+      return;
+    }
+
+    setPlayingStatus("playing");
+    playVerse(index, urls);
+  };
+
+  const handleCopyAyah = async (verse: Verse) => {
+    const payload = `${surahId}:${verse.id}\n${verse.text}\n\n${verse.translation}`;
+    try {
+      await navigator.clipboard.writeText(payload);
+    } catch {
+      // No-op if clipboard is blocked.
+    }
+  };
+
+  const toggleBookmarkAyah = (verseId: number) => {
+    const key = `bookmarks:surah:${surahId}`;
+    setBookmarkedAyahs((prev) => {
+      const next = { ...prev };
+      const id = String(verseId);
+      if (next[id]) {
+        delete next[id];
+      } else {
+        next[id] = true;
+      }
+
+      const ids = Object.keys(next).map((value) => Number.parseInt(value, 10));
+      localStorage.setItem(key, JSON.stringify(ids));
+      return next;
+    });
+  };
+
   return (
     <div className="space-y-4">
       <audio
@@ -226,7 +295,7 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
         </div>
       </div>
 
-      <div className="space-y-0 border border-(--app-border) rounded-2xl overflow-hidden bg-(--app-card)">
+      <div className="space-y-3 sm:space-y-4">
         {verses.map((verse, index) => {
           const isPlaying = currentVerseIndex === index && (playingStatus === "playing" || playingStatus === "paused");
 
@@ -236,42 +305,24 @@ export default function VerseDisplay({ surahId, verses }: VerseDisplayProps) {
               ref={(el) => {
                 verseRefs.current[index] = el;
               }}
-              className={`group relative p-4 sm:p-5 border-b last:border-b-0 border-(--app-border) transition-colors duration-300 ${
-                isPlaying
-                  ? "bg-emerald-500/10"
-                  : "bg-transparent hover:bg-(--app-surface)"
-              }`}
               style={{ animationDelay: isPlaying ? "0ms" : `${index * 50}ms` }}
             >
-              <div className="relative z-10">
-                <div className="flex items-start gap-4">
-                  <div className="hidden sm:flex flex-col gap-2 w-10 items-center text-(--app-muted-2) mt-1">
-                    <button className="hover:text-emerald-600" aria-label="Play ayah">
-                      ▷
-                    </button>
-                    <button className="hover:text-emerald-600" aria-label="Bookmark ayah">
-                      ☆
-                    </button>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs font-semibold text-emerald-700 mb-3">{surahId}:{verse.id}</div>
-                    <div
-                      className={`w-full text-right leading-[2.1] sm:leading-[2.4] tracking-wide select-text transition-all duration-300 ${
-                        isPlaying ? "text-emerald-300 font-semibold" : "text-(--app-fg)"
-                      }`}
-                      style={{ fontFamily: arabicFont, fontSize: `${Math.max(18, arabicFontSize - (isMobile ? 6 : 0))}px` }}
-                      dir="rtl"
-                    >
-                      {verse.text}
-                    </div>
-                    <div className="h-px w-full my-4 bg-(--app-border)"></div>
-                    <div className="text-[11px] tracking-wide uppercase text-(--app-muted-2) mb-1">Saheeh International</div>
-                    <div className={`text-left leading-relaxed transition-colors duration-500 ${isPlaying ? "text-(--app-fg)" : "text-(--app-muted)"}`} style={{ fontSize: `${translationFontSize}px` }}>
-                      {verse.translation}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <AyahCard
+                ayah={verse}
+                surahId={surahId}
+                isPlaying={isPlaying}
+                isBookmarked={Boolean(bookmarkedAyahs[String(verse.id)])}
+                arabicFont={arabicFont}
+                arabicFontSize={Math.max(22, arabicFontSize - (isMobile ? 5 : 0))}
+                translationFontSize={Math.max(13, translationFontSize)}
+                onPlay={() => {
+                  void playSpecificAyah(index);
+                }}
+                onCopy={() => {
+                  void handleCopyAyah(verse);
+                }}
+                onToggleBookmark={() => toggleBookmarkAyah(verse.id)}
+              />
             </div>
           );
         })}
